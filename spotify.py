@@ -27,6 +27,21 @@ def play_song(song_name):
 
     sp.start_playback(uris=[track_uri])
     print("Now playing: " + track_name + " by " + artist_name)
+    
+def play_playlist(playlist_name):
+    results = sp.search(q=playlist_name, limit=1, type="playlist")
+    playlists = results["playlists"]["items"]
+
+    if not playlists:
+        print("Sorry sir, I couldn't find that playlist.")
+        return
+    
+    playlist = playlists[0]
+    playlist_uri = playlist["uri"]
+    playlist_name_found = playlist["name"]
+
+    sp.start_playback(context_uri=playlist["uri"])
+    print("Now playing: " + playlist_name_found)
 
 def pause():
     sp.pause_playback()
@@ -63,6 +78,9 @@ while True:
         if command == "play":
             song = input("Which song, sir? ")
             play_song(song)
+        elif command == "playlist":
+            playlist = input("Which playlist, sir? ")
+            play_playlist(playlist)
         elif command == "pause":
             pause()
         elif command == "resume":
