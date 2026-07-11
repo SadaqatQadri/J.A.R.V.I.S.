@@ -1,5 +1,9 @@
 import pyttsx3
 import speech_recognition as sr
+import os
+from weather import get_weather
+from news import get_news
+from spotify import play_song, play_playlist, pause, resume, skip, previous, volume, current_track
 
 def speak(text):
     engine = pyttsx3.init()
@@ -37,6 +41,63 @@ def process_command(command):
         speak("I am  JARVIS, your personal assistant")
     elif "how are you" in command:
         speak("Running at full capacity, sir.")
+
+    elif "weather" in command:
+        if " in " in command:
+            city = command.split("in")[-1].strip()
+        else:
+            city = "karachi"
+        result = get_weather(city)
+        speak(result)
+
+    elif "news" in command:
+        result = get_news()
+        speak(result)
+
+    elif "playlist" in command:
+        playlist_name = command.replace("play playlist", "").replace("playlist", "").strip()
+        result = play_playlist(playlist_name)
+        speak(result)
+
+    elif "play" in command:
+        song_name = command.replace("jarvis", "").replace("play", "").strip()
+        song_name = " ".join(song_name.split()) 
+        result = play_song(song_name)
+        speak(result)
+
+    elif "pause" in command:
+        result = pause()
+        speak(result)
+
+    elif "resume" in command or "unpause" in command:
+        result = resume()
+        speak(result)
+
+    elif "skip" in command or "next" in command:
+        result = skip()
+        speak(result)
+
+    elif "previous" in command or "go back" in command:
+        result = previous()
+        speak(result)
+
+    elif "current song" in command or "what's playing" in command:
+        result = current_track()
+        speak(result)
+    
+    elif "volume" in command:
+        words = command.split()
+        number = None
+        for word in words:
+            if word.isdigit():
+                number = int(word)
+                break
+        if number is not None:
+            result = volume(number)
+            speak(result)
+        else:
+            speak("What volume would you like, sir?")
+
     elif "stop" in command or "exit" in command:
         speak("Goodbye, sir.")
         return False
@@ -45,10 +106,12 @@ def process_command(command):
         
     return True    
 
-active = True
-speak("JARVIS is now online, sir. How may I assist you?")
-while active:
-    command = listen()
-    if command:
-        active = process_command(command)
+if __name__ == "__main__":
+
+    active = True
+    speak("JARVIS is now online, sir. How may I assist you?")
+    while active:
+        command = listen()
+        if command:
+            active = process_command(command)
 

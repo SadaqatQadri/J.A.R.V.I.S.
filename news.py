@@ -9,26 +9,28 @@ news_api_key = os.getenv("NEWS_API_KEY")
 def get_news(country="us", topic=None):
     if topic:
         url = "https://newsapi.org/v2/top-headlines?country=" + country + "&category=" + topic + "&apiKey=" + news_api_key
-    else: 
+    else:
         url = "https://newsapi.org/v2/top-headlines?country=" + country + "&apikey=" + news_api_key
 
-    response = requests.get(url)   
+    response = requests.get(url)
     data = response.json()
 
-    articles = data["articles"]
+    articles = data.get("articles")
 
     if not articles:
-        print("No news found for that particular search, sir.")
-        return
+        return "No news found for that particular search, sir."
 
-    print ("Here are the top headlines, sir:")
+    headlines = "Here are the top headlines, sir: "
     for i, article in enumerate(articles[:5]):
-        print(str(i+1) + ". " + article["title"])
+        headlines += str(i+1) + ". " + article["title"] + ". "
 
-country = input("Which country would you like me to get the news from, sir? (e.g. us, gb, pk): ")
-topic = input("Any specific topic? (technology/business/entertainment/sports/leave blank): ")
+    return headlines
 
-if topic == "":
-    get_news(country)
-else:
-    get_news(country, topic)
+if __name__ == "__main__":
+    country = input("Which country would you like me to get the news from, sir? (e.g. us, gb, pk): ")
+    topic = input("Any specific topic? (technology/business/entertainment/sports/leave blank): ")
+
+    if topic == "":
+        print(get_news(country))
+    else:
+        print(get_news(country, topic))

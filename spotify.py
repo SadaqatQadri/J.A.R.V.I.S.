@@ -17,84 +17,82 @@ def play_song(song_name):
     tracks = results['tracks']['items']
 
     if not tracks:
-        print("Sorry sire, I couldn't find that song.")
-        return
-    
+        return "Sorry sir, I couldn't find that song."
+
     track = tracks[0]
     track_uri = track['uri']
     track_name = track['name']
     artist_name = track['artists'][0]['name']
 
     sp.start_playback(uris=[track_uri])
-    print("Now playing: " + track_name + " by " + artist_name)
-    
+    return "Now playing: " + track_name + " by " + artist_name
+
 def play_playlist(playlist_name):
     results = sp.search(q=playlist_name, limit=1, type="playlist")
     playlists = results["playlists"]["items"]
 
     if not playlists:
-        print("Sorry sir, I couldn't find that playlist.")
-        return
-    
+        return "Sorry sir, I couldn't find that playlist."
+
     playlist = playlists[0]
     playlist_uri = playlist["uri"]
     playlist_name_found = playlist["name"]
 
-    sp.start_playback(context_uri=playlist["uri"])
-    print("Now playing: " + playlist_name_found)
+    sp.start_playback(context_uri=playlist_uri)
+    return "Now playing: " + playlist_name_found
 
 def pause():
     sp.pause_playback()
-    print("Paused, sir.")
+    return "Paused, sir."
 
 def resume():
     sp.start_playback()
-    print("Resumed, sir.")
+    return "Resumed, sir."
 
 def skip():
     sp.next_track()
-    print("Skipped to the next track, sir.")
+    return "Skipped to the next track, sir."
 
 def previous():
     sp.previous_track()
-    print("Went back to the previous track, sir.")
+    return "Went back to the previous track, sir."
 
 def volume(level):
     sp.volume(level)
-    print("Volume set to " + str(level) + ", sir.")
+    return "Volume set to " + str(level) + ", sir."
 
 def current_track():
     track = sp.current_user_playing_track()
     if track:
         name = track["item"]["name"]
         artist = track["item"]["artists"][0]["name"]
-        print("Currently playing: " + name + " by " + artist)
+        return "Currently playing: " + name + " by " + artist
     else:
-        print("Nothing is currently playing, sir.")
+        return "Nothing is currently playing, sir."
 
-while True:
-        command = input ("Command, sir? (play/pause/resume/skip/back/volume/current/quit): ")
+if __name__ == "__main__":
+    while True:
+        command = input("Command, sir? (play/pause/resume/skip/back/volume/current/quit): ")
 
         if command == "play":
             song = input("Which song, sir? ")
-            play_song(song)
+            print(play_song(song))
         elif command == "playlist":
             playlist = input("Which playlist, sir? ")
-            play_playlist(playlist)
+            print(play_playlist(playlist))
         elif command == "pause":
-            pause()
+            print(pause())
         elif command == "resume":
-            resume()
+            print(resume())
         elif command == "skip":
-            skip()
+            print(skip())
         elif command == "back":
-            previous()
+            print(previous())
         elif command == "volume":
             level = int(input("Volume level (0-100):"))
-            volume(level)
+            print(volume(level))
         elif command == "current":
-            current_track()
+            print(current_track())
         elif command == "quit":
             print("Goodbye, sir.")
             break
-         
