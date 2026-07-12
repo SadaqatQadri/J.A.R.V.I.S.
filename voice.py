@@ -4,9 +4,11 @@ import os
 from weather import get_weather
 from news import get_news
 from spotify import play_song, play_playlist, pause, resume, skip, previous, volume, current_track
+import gui_bridge
 
 def speak(text):
     engine = pyttsx3.init()
+    gui_bridge.update_status("Speaking", text)
     engine.say(text)
     engine.runAndWait()
     engine.stop()
@@ -15,6 +17,7 @@ def listen():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print("Listening, sir...")
+        gui_bridge.update_status("listening", "Listening sir...")
         r.adjust_for_ambient_noise(source, duration=0.5)
 
         try:
@@ -53,6 +56,7 @@ def process_command(command):
     elif "news" in command:
         result = get_news()
         speak(result)
+        gui_bridge.show_news(result)
 
     elif "playlist" in command:
         playlist_name = command.replace("play playlist", "").replace("playlist", "").strip()
@@ -65,7 +69,7 @@ def process_command(command):
         result = play_song(song_name)
         speak(result)
 
-    elif "pause" in command:
+    elif "pause" in command or "stop the music" in command:
         result = pause()
         speak(result)
 
@@ -98,7 +102,7 @@ def process_command(command):
         else:
             speak("What volume would you like, sir?")
 
-    elif "stop" in command or "exit" in command:
+    elif "shut down" in command or "goodbye" in command:
         speak("Goodbye, sir.")
         return False
     else:
