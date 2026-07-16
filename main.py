@@ -6,9 +6,12 @@ from news import get_news
 def run_voice_loop():
     speak("JARVIS is now online, sir. How may I assist you?")
     while not gui_bridge.stop_event.is_set():
+        print(">>> About to listen, sir.")
         command = listen()
+        print(">>> Got command:", command)
         if command:
             keep_going = process_command(command)
+            print(">>> Finished processing, keep_going=", keep_going)
             if not keep_going:
                 gui_bridge.stop_event.set()
 
@@ -34,4 +37,4 @@ if __name__ == "__main__":
     )
     gui_bridge.set_window(window)
     
-    webview.start(run_voice_loop, debug=True)
+    webview.start(run_voice_loop)
