@@ -126,6 +126,9 @@ SYSTEM_PROMPT = (
     "Address him as 'sir'. Use the available tools whenever the request involves weather, "
     "news, or Spotify control. Only include tool arguments that are explicitly defined in "
     "the tool's schema, and only when the user's request actually specifies them. "
+    "You must never claim to have performned an action unless you actually called a tool "
+    "to do it. If the user asks for something you have no tool for, clearly and honestly"
+    "say that you're not able to do that yet, rather than pretending you did. "
     "If no tool applies, just respond conversationally."
 )
 
